@@ -10,14 +10,20 @@ bool doPrint = true;
 
 //generacion de un nuevo millis
 unsigned long newMillis = 0;
-int sampleTime = 200;
+int sampleTime = 1000;
 
 //para tomar solo un valor de millis con el switch en high
 bool takeit = true;
 
+//cuando llega a mil, avisar
+int pinLed = 13;
+int already = 0;
+
 void setup() {
   pinMode(pinSwitch, INPUT);
+  pinMode(pinLed, OUTPUT);
   Serial.begin(9600);
+  digitalWrite(pinLed, LOW);
 }
 
 void loop() {
@@ -26,6 +32,7 @@ void loop() {
   printStart();
   startTime();
   takeMillis();
+  done();
 }
 
 void readSwitch() {
@@ -58,8 +65,15 @@ void takeMillis() {
       Serial.print(newMillis);
       Serial.print(", ");
       takeit = false;
+      already++;
     }
   } else {
     takeit = true;
+  }
+}
+
+void done() {
+  if (already == 1000) {
+    digitalWrite(pinLed, HIGH);
   }
 }
